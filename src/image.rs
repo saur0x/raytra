@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use crate::color::Color;
 use crate::utils;
 
@@ -18,17 +20,20 @@ impl Image {
     }
 
     pub fn set_pixel(&mut self, x: usize, y: usize, pixel: Color) {
-        // self.pixels[y * self.width + x].update_from_vector(pixel);
         self.pixels[y * self.width + x] = pixel;
     }
 
     pub fn show(&self) {
-        print!("P3\n{} {}\n255\n", self.width, self.height);
+        let mut pixels = Vec::<u8>::with_capacity(3 * self.width * self.height);
         for c in self.pixels.iter() {
-            println!("{} {} {}", Self::to_byte(c.0), Self::to_byte(c.1), Self::to_byte(c.2));   
+            pixels.extend_from_slice(&[Self::to_byte(c.0), Self::to_byte(c.1), Self::to_byte(c.2)]);
         }
+
+        print!("P6\n{} {}\n255\n", self.width, self.height);
+        std::io::stdout().write_all(&pixels).expect("Error occurred while writing pixel data.");
     }
 
+    #[inline]
     fn to_byte(value: f64) -> u8 {
         (256.0 * utils::clamp(value, 0.0, 0.999)) as u8
     }

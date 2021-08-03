@@ -16,7 +16,7 @@ impl Vector {
             (self.1 * other.2) - (other.1 * self.2),
             (self.2 * other.0) - (other.2 * self.0),
             (self.0 * other.1) - (other.0 * self.1)
-        )        
+        )
     }
 
     pub fn magnitude(&self) -> f64 {
